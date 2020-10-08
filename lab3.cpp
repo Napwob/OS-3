@@ -19,6 +19,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <csignal>
+#include <signal.h>
 using namespace std;
 
 
@@ -30,20 +31,20 @@ cout<<"Авторы: Русманов Владислав ИВ-822, Крюков 
 cout<<"Краткое описание проекта:"<<endl;
 cout<<"Данная программа позволяет выполнять простые действия по работе с процессами Linux"<<endl;
 cout<<"    Чтобы получить функционал по работе с файловой системой, нужно запустить программу с ключом -l"<<endl;
-cout<<"    Чтобы запустить любую операцию сначала необходимо указать ключ данной операции, а затем режим 'фоновости' "<<endl;
+cout<<"    Чтобы запустить любую операцию сначала необходимо указать ключ данной операции, а затем режим фона "<<endl;
 cout<<"    -d Запускает операцию в фоновом режиме" <<endl;
-cout<<"    -nd Запускает операцию в не фоновом режиме" <<endl;
+cout<<"    -n Запускает операцию в не фоновом режиме" <<endl;
 cout<<"    -s Порождает новый процесс" <<endl;
 cout<<"    -t Режим получения и обработки сигналов"<<endl;
 cout<<"Все доступные аргументы:"<<endl;
 cout<<"    -l"<<endl;
 cout<<"    -d"<<endl;
-cout<<"    -nd"<<endl;
+cout<<"    -n"<<endl;
 cout<<"    -s"<<endl;
 cout<<"    -t"<<endl;
 cout<<"Примеры запуска:"<<endl;
 cout<<"    ./lab3 —l -h"<<endl;
-cout<<"    ./lab3 -s -nd proc"<<endl;
+cout<<"    ./lab3 -s -n proc"<<endl;
 cout<<"    ./lab3 -s -d proc"<<endl;
 cout<<"    ./lab3 -t"<<endl;
 }
@@ -94,6 +95,12 @@ void test()
 	while(true)
 	{
 		signal(SIGINT, signalHandler); 	
+        signal(SIGABRT, signalHandler);
+      //  signal(SIGBREAK, signalHandler);
+        signal(SIGFPE, signalHandler);
+        signal(SIGILL, signalHandler);
+        signal(SIGSEGV, signalHandler);
+        signal(SIGTERM, signalHandler);
 	}
 }
 
@@ -107,9 +114,10 @@ int main(int argc, char* argv[]) {
     
     if (strcmp(argv[1],"--help")==0) spravka();
     
-    if (strcmp(argv[1],"-s")==0) sp(argv[2], argv[3]);//-d для демонофикации -nd для без демонофикации
+    if ((strcmp(argv[1],"-s")==0) && ((strcmp(argv[2],"-d")==0) || (strcmp(argv[2],"-n")==0))) sp(argv[2], argv[3]);//-d для демонофикации -nd для без демонофикации
     
 	if (strcmp(argv[1],"-t")==0) test();	
+    
 	
     return 0;
 }
